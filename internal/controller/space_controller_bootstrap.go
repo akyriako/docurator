@@ -15,11 +15,11 @@ import (
 )
 
 func (r *SpaceReconciler) ReconcileBootstrap(ctx context.Context, space *docsv1alpha1.Space) (bool, error) {
-	r.logger.V(debugLevel).Info("reconciling bootstrap job")
-
 	bootstrapJobName := fmt.Sprintf(SpaceBootstrapJobName, space.Name)
 	bootstrapJobExists := true
 	bootstrapJobObjectKey := client.ObjectKey{Namespace: space.Namespace, Name: bootstrapJobName}
+
+	r.logger.V(debugLevel).Info("reconciling bootstrap job", "job", bootstrapJobName)
 
 	bootstrapJob := &batchv1.Job{}
 	if err := r.Get(ctx, bootstrapJobObjectKey, bootstrapJob); err != nil {

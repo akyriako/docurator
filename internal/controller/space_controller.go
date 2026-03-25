@@ -83,23 +83,32 @@ func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		return ctrl.Result{}, err
 	}
 
-	//
-	if completed && ((space.Status.RepoProvisioned != nil && *space.Status.RepoProvisioned == false) || space.Status.RepoProvisioned == nil) {
+	giteaProtocol := string(giteaSecret.Data["GITEA_PROTOCOL"])
+	giteaHost := string(giteaSecret.Data["GITEA_HOST"])
+	gitOwner := string(giteaSecret.Data["GIT_OWNER"])
+	repoName := fmt.Sprintf(SpaceRepoName, space.Name)
+	repoUrl := fmt.Sprintf("%s://%s/%s/%s", giteaProtocol, giteaHost, gitOwner, repoName)
+
+	//&& ((space.Status.RepoProvisioned != nil && *space.Status.RepoProvisioned == false) || space.Status.RepoProvisioned == nil)
+	if completed {
+		r.logger.V(debugLevel).Info("bootstrapping git repo completed", "url", repoUrl)
+
 		if err := r.patchStatus(ctx, &space, func(status *docsv1alpha1.SpaceStatus) {
 			status.RepoProvisioned = ptr.To(completed)
-
-			giteaProtocol := string(giteaSecret.Data["GITEA_PROTOCOL"])
-			giteaHost := string(giteaSecret.Data["GITEA_HOST"])
-			gitOwner := string(giteaSecret.Data["GIT_OWNER"])
-			repoName := fmt.Sprintf(SpaceRepoName, space.Name)
-			status.RepoURL = fmt.Sprintf("%s://%s/%s/%s", giteaProtocol, giteaHost, gitOwner, repoName)
+			status.RepoURL = repoUrl
 		}); err != nil {
 			r.logger.Error(err, "updating space status failed")
 			return ctrl.Result{RequeueAfter: 15 * time.Second}, nil
 		}
 	}
 
-	return ctrl.Result{RequeueAfter: 1 * time.Minute}, nil
+	requeueAfter := 1 * time.Minute
+	if completed {
+		requeueAfter = 5 * time.Minute
+	}
+
+	r.logger.Info("reconciling space completed", "provisioned", completed)
+	return ctrl.Result{RequeueAfter: requeueAfter}, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.
