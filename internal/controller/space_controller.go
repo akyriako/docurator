@@ -84,9 +84,9 @@ func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	}
 
 	//
-	if completed && ((space.Status.Ready != nil && *space.Status.Ready == false) || space.Status.Ready == nil) {
+	if completed && ((space.Status.RepoProvisioned != nil && *space.Status.RepoProvisioned == false) || space.Status.RepoProvisioned == nil) {
 		if err := r.patchStatus(ctx, &space, func(status *docsv1alpha1.SpaceStatus) {
-			status.Ready = ptr.To(completed)
+			status.RepoProvisioned = ptr.To(completed)
 
 			giteaProtocol := string(giteaSecret.Data["GITEA_PROTOCOL"])
 			giteaHost := string(giteaSecret.Data["GITEA_HOST"])

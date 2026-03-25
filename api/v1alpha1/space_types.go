@@ -40,8 +40,8 @@ type SpaceStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	Ready   *bool  `json:"ready"`
-	RepoURL string `json:"repoUrl"`
+	RepoProvisioned *bool  `json:"repoProvisioned"`
+	RepoURL         string `json:"repoUrl"`
 }
 
 // +kubebuilder:object:root=true
@@ -49,7 +49,6 @@ type SpaceStatus struct {
 
 // Space is the Schema for the spaces API.
 // +kubebuilder:printcolumn:name="Repo URL",type=string,JSONPath=`.status.repoUrl`
-// +kubebuilder:printcolumn:name="Ready",type=boolean,JSONPath=`.status.ready`
 // +kubebuilder:printcolumn:name="Age",type=date,JSONPath=".metadata.creationTimestamp"
 type Space struct {
 	metav1.TypeMeta   `json:",inline"`

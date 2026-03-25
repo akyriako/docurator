@@ -13,7 +13,7 @@ const (
 	SpaceLabel                     = "space-%s"
 	SpaceBootstrapJobName          = "space-%s-bootstrap"
 	SpaceBootstrapJobContainerName = "space-%s-bootstrap-job"
-	SpaceRepoName                  = "docs-%s"
+	SpaceRepoName                  = "%s-docs"
 )
 
 func getLabels(space *docsv1alpha1.Space) map[string]string {
