@@ -4,6 +4,8 @@ metadata:
   labels:
     app.kubernetes.io/name: docurator
     app.kubernetes.io/managed-by: kustomize
-  name: space-sample
+  name: change-guides
 spec:
-  # TODO(user): Add fields here
+  name: change-guides
+  giteaSecretRef:
+    name: gitea-spaces

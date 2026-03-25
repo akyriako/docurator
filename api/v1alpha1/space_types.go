@@ -17,31 +17,40 @@ limitations under the License.
 package v1alpha1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // SpaceSpec defines the desired state of Space.
 type SpaceSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	Name string `json:"name"`
 
-	// Foo is an example field of Space. Edit space_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// +kubebuilder:validation:Optional
+	ImagePullSecrets []corev1.LocalObjectReference `json:"imagePullSecrets,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:default:="akyriako78/docusaurus-gitea-bootstrap:0.0.1"
+	BootstrapImage string `json:"bootstrapImage,omitempty"`
+
+	GiteaSecretRef corev1.SecretReference `json:"giteaSecretRef"`
 }
 
 // SpaceStatus defines the observed state of Space.
 type SpaceStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	Ready   *bool  `json:"ready"`
+	RepoURL string `json:"repoUrl"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
 // Space is the Schema for the spaces API.
+// +kubebuilder:printcolumn:name="Repo URL",type=string,JSONPath=`.status.repoUrl`
+// +kubebuilder:printcolumn:name="Ready",type=boolean,JSONPath=`.status.ready`
+// +kubebuilder:printcolumn:name="Age",type=date,JSONPath=".metadata.creationTimestamp"
 type Space struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
