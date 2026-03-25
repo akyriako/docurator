@@ -89,6 +89,14 @@ func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	repoName := fmt.Sprintf(SpaceRepoName, space.Name)
 	repoUrl := fmt.Sprintf("%s://%s/%s/%s", giteaProtocol, giteaHost, gitOwner, repoName)
 
+	_, err = r.ReconcileFluxArtifacts(ctx, &space, repoUrl)
+	if err != nil {
+		r.logger.Error(err, "reconciling flux artifacts failed")
+		return ctrl.Result{}, err
+	}
+
+	// TODO: get the RepoProvisioned and Completed by the GitRepository condition ready status
+
 	//&& ((space.Status.RepoProvisioned != nil && *space.Status.RepoProvisioned == false) || space.Status.RepoProvisioned == nil)
 	if completed {
 		r.logger.V(debugLevel).Info("bootstrapping git repo completed", "url", repoUrl)

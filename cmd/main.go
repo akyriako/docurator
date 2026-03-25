@@ -40,6 +40,8 @@ import (
 
 	docsv1alpha1 "github.com/akyriako/docurator/api/v1alpha1"
 	"github.com/akyriako/docurator/internal/controller"
+	kustomizev1 "github.com/fluxcd/kustomize-controller/api/v1"
+	sourcev1 "github.com/fluxcd/source-controller/api/v1"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -50,6 +52,10 @@ var (
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
+
+	utilruntime.Must(sourcev1.AddToScheme(scheme))
+	utilruntime.Must(kustomizev1.AddToScheme(scheme))
+	// +kubebuilder:scaffold:scheme
 
 	utilruntime.Must(docsv1alpha1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
