@@ -1,11 +1,41 @@
+#apiVersion: docs.opentelekomcloud.com/v1alpha1
+#kind: Space
+#metadata:
+#  labels:
+#    app.kubernetes.io/name: docurator
+#    app.kubernetes.io/managed-by: kustomize
+#  name: change-guides
+#spec:
+#  name: change-guides
+#  giteaSecretRef:
+#    name: gitea-spaces
+---
 apiVersion: docs.opentelekomcloud.com/v1alpha1
 kind: Space
 metadata:
   labels:
     app.kubernetes.io/name: docurator
     app.kubernetes.io/managed-by: kustomize
-  name: change-guides
+  name: release-notes
 spec:
-  name: change-guides
+  name: release-notes
   giteaSecretRef:
     name: gitea-spaces
+  ingress:
+    ingressClassName: traefik
+    host: release-notes.docs.proxmox.home
+---
+apiVersion: docs.opentelekomcloud.com/v1alpha1
+kind: Space
+metadata:
+  labels:
+    app.kubernetes.io/name: docurator
+    app.kubernetes.io/managed-by: kustomize
+  name: manuals
+spec:
+  name: manuals
+  giteaSecretRef:
+    name: gitea-spaces
+  ingress:
+    ingressClassName: traefik
+    host: manuals.docs.proxmox.home

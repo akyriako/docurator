@@ -18,6 +18,9 @@ spec:
     - jsonPath: .status.repoUrl
       name: Repo URL
       type: string
+    - jsonPath: .spec.ingress.host
+      name: URL
+      type: string
     - jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
@@ -47,7 +50,7 @@ spec:
             description: SpaceSpec defines the desired state of Space.
             properties:
               bootstrapImage:
-                default: akyriako78/docusaurus-gitea-bootstrap:0.0.1
+                default: akyriako78/docusaurus-gitea-bootstrap:0.0.4
                 type: string
               giteaSecretRef:
                 description: |-
@@ -82,10 +85,38 @@ spec:
                   type: object
                   x-kubernetes-map-type: atomic
                 type: array
+              ingress:
+                properties:
+                  clusterIssuer:
+                    type: string
+                  host:
+                    pattern: ^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$
+                    type: string
+                  ingressClassName:
+                    type: string
+                  path:
+                    default: /
+                    type: string
+                  pathType:
+                    default: ImplementationSpecific
+                    description: PathType represents the type of path referred to
+                      by a HTTPIngressPath.
+                    enum:
+                    - Exact
+                    - Prefix
+                    - ImplementationSpecific
+                    type: string
+                  tlsSecretName:
+                    type: string
+                required:
+                - host
+                - ingressClassName
+                type: object
               name:
                 type: string
             required:
             - giteaSecretRef
+            - ingress
             - name
             type: object
           status:

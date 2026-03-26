@@ -110,13 +110,13 @@ func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		}
 	}
 
-	requeueAfter := 1 * time.Minute
-	if completed {
-		requeueAfter = 5 * time.Minute
-	}
+	//requeueAfter := 1 * time.Minute
+	//if completed {
+	//	requeueAfter = 5 * time.Minute
+	//}
 
 	r.logger.Info("reconciling space completed", "provisioned", completed)
-	return ctrl.Result{RequeueAfter: requeueAfter}, nil
+	return ctrl.Result{RequeueAfter: 1 * time.Minute}, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.

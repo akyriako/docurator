@@ -18,6 +18,7 @@ package v1alpha1
 
 import (
 	corev1 "k8s.io/api/core/v1"
+	networkingv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -29,10 +30,35 @@ type SpaceSpec struct {
 	ImagePullSecrets []corev1.LocalObjectReference `json:"imagePullSecrets,omitempty"`
 
 	// +kubebuilder:validation:Optional
-	// +kubebuilder:default:="akyriako78/docusaurus-gitea-bootstrap:0.0.1"
+	// +kubebuilder:default:="akyriako78/docusaurus-gitea-bootstrap:0.0.4"
 	BootstrapImage string `json:"bootstrapImage,omitempty"`
 
 	GiteaSecretRef corev1.SecretReference `json:"giteaSecretRef"`
+
+	Ingress IngressSpec `json:"ingress"`
+}
+
+type IngressSpec struct {
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Pattern:=`^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$`
+	Host string `json:"host"`
+
+	IngressClassName string `json:"ingressClassName"`
+
+	// +optional
+	// +kubebuilder:default:="/"
+	Path string `json:"path,omitempty"`
+
+	// +optional
+	// +kubebuilder:default:="ImplementationSpecific"
+	// +kubebuilder:validation:Enum=Exact;Prefix;ImplementationSpecific
+	PathType *networkingv1.PathType `json:"pathType,omitempty"`
+
+	// +optional
+	TLSSecretName *string `json:"tlsSecretName,omitempty"`
+
+	// +optional
+	ClusterIssuer *string `json:"clusterIssuer,omitempty"`
 }
 
 // SpaceStatus defines the observed state of Space.
@@ -49,6 +75,7 @@ type SpaceStatus struct {
 
 // Space is the Schema for the spaces API.
 // +kubebuilder:printcolumn:name="Repo URL",type=string,JSONPath=`.status.repoUrl`
+// +kubebuilder:printcolumn:name="URL",type=string,JSONPath=`.spec.ingress.host`
 // +kubebuilder:printcolumn:name="Age",type=date,JSONPath=".metadata.creationTimestamp"
 type Space struct {
 	metav1.TypeMeta   `json:",inline"`

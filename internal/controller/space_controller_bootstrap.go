@@ -67,6 +67,11 @@ func (r *SpaceReconciler) createJob(ctx context.Context, key client.ObjectKey, s
 								{Name: "CREATE_UNDER_ORG", Value: "true"},
 								{Name: "SITE_NAME", Value: space.Name},
 								{Name: "REPO_NAME", Value: fmt.Sprintf(SpaceRepoName, space.Name)},
+								{Name: "META_NAMESPACE", Value: space.Namespace},
+								{Name: "REGISTRY", Value: "docker.io"},
+								{Name: "REGISTRY_ORG", Value: "akyriako78"},
+								{Name: "EXPOSE_URL", Value: space.Spec.Ingress.Host},
+								{Name: "INGRESS_CLASS_NAME", Value: space.Spec.Ingress.IngressClassName},
 							},
 							EnvFrom: []corev1.EnvFromSource{
 								{
